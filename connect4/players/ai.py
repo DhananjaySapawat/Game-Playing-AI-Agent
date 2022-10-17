@@ -39,7 +39,7 @@ class AIPlayer:
             else:
                 return 2
         def evalutionFunction(state):
-            return get_pts(p,state[0]) - get_pts(nextplayer(p),state[0])
+            return get_pts(p,state[0]) - 1.5*get_pts(nextplayer(p),state[0])
         def Action(state,a,v):
             tempboard = state[0]
             board2 = []
@@ -103,7 +103,7 @@ class AIPlayer:
                     b = current[0]
             return current
         # Do the rest of your implementation here
-        act = max(state,-np.inf,np.inf,n,8)
+        act = max(state,-np.inf,np.inf,n,5)
         if(act[1] == '-1'):
             for i in get_valid_actions(p,state):
                 return i
@@ -126,82 +126,6 @@ class AIPlayer:
                         2. Dictionary of int to Integer. It will tell the remaining popout moves given a player
         :return: action (0 based index of the column and if it is a popout move)
         """
-        p = self.player_number
-        n = state[1][1].get_int()
-        def nextplayer(n):
-            if(n==2):
-                return 1
-            else:
-                return 2
-        def evalutionFunction(state):
-            return get_pts(p,state[0]) - get_pts(nextplayer(p),state[0])
-        def Action(state,a,v):
-            tempboard = state[0]
-            board2 = []
-            for i in range(len(tempboard)):
-                board2.append(tempboard[i][0:])
-            board = np.array(board2)
-            if(a[-1] != 'p'):
-                for i in range(len(board)-1,-1,-1):
-                    if(board[i][int(a)] == 0):
-                        board[i][int(a)] = v
-                        break
-            else:
-                l = 0
-                for i in range(len(board)-2,0,-1):
-                    if(i == 0):
-                        board[i][int(a[:-1])] = 0
-                    else:
-                        board[i][int(a[:-1])] = board[i-1][int(a[:-1])]
-                        if board[i-1][int(a[:-1])] == 0 : break
-            return board, state[1]
-        def max(state,pop,d):
-            if(d==0 or len(get_valid_actions(p,state)) == 0):
-                return [evalutionFunction(state),'-1']
-            current = [-np.inf,'-1']
-            for i in get_valid_actions(p,state):
-                succesor  = []
-                if(i[1] == False):
-                    succesor = min(Action(state,str(i[0]),p),pop,d-1)
-                    succesor[1] = i
-                else:
-                    if(pop == 0):
-                        break
-                    succesor = min(Action(state,str(i[0])+'p',p),pop-1,d-1)
-                    succesor[1] = i
-                if(succesor[0] > current[0]):
-                    current = succesor
-            return current
-        def min(state,pop,d):
-            if(d==0 or len(get_valid_actions(p,state)) == 0):
-                return [evalutionFunction(state),'-1']
-            succesors = []
-            for i in get_valid_actions(p,state):
-                if(i[1] == False):
-                    succesor = max(Action(state,str(i[0]),nextplayer(p)),pop,d-1)
-                    succesor[1] = i
-                else:
-                    if(pop == 0):
-                        break
-                    succesor = max(Action(state,str(i[0])+'p',nextplayer(p)),pop-1,d-1)
-                    succesor[1] = i
-                succesors.append(succesor)
-            average = 0
-            n = 1
-            if(len(succesors) !=0):
-                n = len(succesors)
-            for i in succesors:
-                average = average + i[0]
-            average = average / n
-            current = succesors[0]
-            current[0] = average
-            return current
-        # Do the rest of your implementation here
-        act = max(state,n,4)
-        if(act[1] == '-1'):
-            for i in get_valid_actions(p,state):
-                return i
-        return act[1]
 
         # Do the rest of your implementation here
         raise NotImplementedError('Whoops I don\'t know what to do')
