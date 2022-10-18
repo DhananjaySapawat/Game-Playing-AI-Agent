@@ -60,6 +60,7 @@ class AIPlayer:
                         board[i][int(a[:-1])] = board[i-1][int(a[:-1])]
                         if board[i-1][int(a[:-1])] == 0 : break
             return board, state[1]
+        # Against an Adversarial Agent
         def max(state,a,b,pop,d):
             if(d==0 or len(get_valid_actions(p,state)) == 0):
                 return [evalutionFunction(state),'-1']
@@ -81,6 +82,7 @@ class AIPlayer:
                 if(current[0]>a):
                     a = current[0]
             return current
+        # Against an Adversarial Agent
         def min(state,a,b,pop,d):
             if(d==0 or len(get_valid_actions(p,state)) == 0):
                 return [evalutionFunction(state),'-1']
@@ -155,24 +157,26 @@ class AIPlayer:
                         board[i][int(a[:-1])] = board[i-1][int(a[:-1])]
                         if board[i-1][int(a[:-1])] == 0 : break
             return board, state[1]
-        def max(state,pop,d):
+        # Against an Random Agent
+        def expectimax(state,pop,d):
             if(d==0 or len(get_valid_actions(p,state)) == 0):
                 return [evalutionFunction(state),'-1']
             current = [-np.inf,'-1']
             for i in get_valid_actions(p,state):
                 succesor  = []
                 if(i[1] == False):
-                    succesor = min(Action(state,str(i[0]),p),pop,d-1)
+                    succesor = expectimin(Action(state,str(i[0]),p),pop,d-1)
                     succesor[1] = i
                 else:
                     if(pop == 0):
                         break
-                    succesor = min(Action(state,str(i[0])+'p',p),pop-1,d-1)
+                    succesor = expectimin(Action(state,str(i[0])+'p',p),pop-1,d-1)
                     succesor[1] = i
                 if(succesor[0] > current[0]):
                     current = succesor
             return current
-        def min(state,pop,d):
+        # Against an Random Agent
+        def expectimin(state,pop,d):
             if(d==0 or len(get_valid_actions(p,state)) == 0):
                 return [evalutionFunction(state),'-1']
             current = [0,'-1']
@@ -181,18 +185,18 @@ class AIPlayer:
                 s = s + 1
                 succesor  = []
                 if(i[1] == False):
-                    succesor = max(Action(state,str(i[0]),nextplayer(p)),pop,d-1)
+                    succesor = expectimax(Action(state,str(i[0]),nextplayer(p)),pop,d-1)
                     succesor[1] = i
                 else:
                     if(pop == 0):
                         break
-                    succesor = max(Action(state,str(i[0])+'p',nextplayer(p)),pop-1,d-1)
+                    succesor = expectimax(Action(state,str(i[0])+'p',nextplayer(p)),pop-1,d-1)
                     succesor[1] = i
                 current[0] = current[0] + succesor[0]
             current[0] = current[0] / s
             return current
         # Do the rest of your implementation here
-        act = max(state,n,4)
+        act = expectimax(state,n,4)
         if(act[1] == '-1'):
             for i in get_valid_actions(p,state):
                 return i
