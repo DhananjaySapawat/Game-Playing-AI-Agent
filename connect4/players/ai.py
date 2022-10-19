@@ -112,7 +112,7 @@ class AIPlayer:
                 if(current[0]<b):
                     b = current[0]
             return current
-        # Do the rest of your implementation here
+        # Iterative Deepening
         t = 1
         while(True):
             next_action = max(state,-np.inf,np.inf,n,t)
@@ -214,7 +214,7 @@ class AIPlayer:
                 current[0] = current[0] + succesor[0]
             current[0] = current[0] / s
             return current
-        # Do the rest of your implementation here
+        # Iterative Deepening
         t = 1
         while(True):
             next_action = expectimax(state,n,t)
