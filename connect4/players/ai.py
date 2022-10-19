@@ -1,4 +1,5 @@
 import random
+import time
 import numpy as np
 from typing import List, Tuple, Dict
 from connect4.utils import get_pts, get_valid_actions, Integer
@@ -33,6 +34,8 @@ class AIPlayer:
         """
         p = self.player_number
         n = state[1][1].get_int()
+        start_time = time.clock()
+        time_difference = 0.05
         def nextplayer(n):
             if(n==2):
                 return 1
@@ -62,6 +65,8 @@ class AIPlayer:
             return board, state[1]
         # Against an Adversarial Agent
         def max(state,a,b,pop,d):
+            if(time.clock() - start_time > self.time - time_difference):
+                return [evalutionFunction(state),'-1']
             if(d==0 or len(get_valid_actions(p,state)) == 0):
                 return [evalutionFunction(state),'-1']
             current = [-np.inf,'-1']
@@ -84,6 +89,8 @@ class AIPlayer:
             return current
         # Against an Adversarial Agent
         def min(state,a,b,pop,d):
+            if(time.clock() - start_time > self.time - time_difference):
+                    return [evalutionFunction(state),'-1']
             if(d==0 or len(get_valid_actions(p,state)) == 0):
                 return [evalutionFunction(state),'-1']
             current = [np.inf,'-1']
@@ -100,16 +107,22 @@ class AIPlayer:
                 if(succesor[0] < current[0]):
                     current = succesor
                 if(current[0]<=a):
+
                     return current
                 if(current[0]<b):
                     b = current[0]
             return current
         # Do the rest of your implementation here
-        act = max(state,-np.inf,np.inf,n,4)
-        if(act[1] == '-1'):
-            for i in get_valid_actions(p,state):
-                return i
-        return act[1]
+        t = 1
+        while(True):
+            next_action = max(state,-np.inf,np.inf,n,t)
+            t = t + 1
+            if(time.clock() - start_time > self.time - time_difference):
+                if(current_action[1] == '-1'):
+                    for i in get_valid_actions(p,state):
+                        return i
+                return current_action[1]
+            current_action =  next_action
 
     def get_expectimax_move(self, state: Tuple[np.array, Dict[int, Integer]]) -> Tuple[int, bool]:
         """
@@ -130,6 +143,8 @@ class AIPlayer:
         """
         p = self.player_number
         n = state[1][1].get_int()
+        start_time = time.clock()
+        time_difference = 0.05
         def nextplayer(n):
             if(n==2):
                 return 1
@@ -159,6 +174,8 @@ class AIPlayer:
             return board, state[1]
         # Against an Random Agent
         def expectimax(state,pop,d):
+            if(time.clock() - start_time > self.time - time_difference):
+                return [evalutionFunction(state),'-1']
             if(d==0 or len(get_valid_actions(p,state)) == 0):
                 return [evalutionFunction(state),'-1']
             current = [-np.inf,'-1']
@@ -177,6 +194,8 @@ class AIPlayer:
             return current
         # Against an Random Agent
         def expectimin(state,pop,d):
+            if(time.clock() - start_time > self.time - time_difference):
+                return [evalutionFunction(state),'-1']
             if(d==0 or len(get_valid_actions(p,state)) == 0):
                 return [evalutionFunction(state),'-1']
             current = [0,'-1']
@@ -196,9 +215,14 @@ class AIPlayer:
             current[0] = current[0] / s
             return current
         # Do the rest of your implementation here
-        act = expectimax(state,n,4)
-        if(act[1] == '-1'):
-            for i in get_valid_actions(p,state):
-                return i
-        return act[1]
+        t = 1
+        while(True):
+            next_action = expectimax(state,n,t)
+            t = t + 1
+            if(time.clock() - start_time > self.time - time_difference):
+                if(current_action[1] == '-1'):
+                    for i in get_valid_actions(p,state):
+                        return i
+                return current_action[1]
+            current_action =  next_action
         # Do the rest of your implementation here
